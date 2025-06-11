@@ -14,7 +14,7 @@ const CategoryList = () => {
     );
   }
   return (
-    <div>
+    <div className="space-y-4">
       {categories.map((category) => {
         return <Category key={category.id} {...category} />;
       })}

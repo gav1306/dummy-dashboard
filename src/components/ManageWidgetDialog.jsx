@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useContext, useEffect, useState } from "react";
 import { CategoryWidgetContext } from "../provider/categoryWidget";
 import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
+import RemoveDialog from "./dialog/Remove";
 
 const ManageWidgetDialog = ({
   children,
@@ -70,41 +71,51 @@ const ManageWidgetDialog = ({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent side="right" className="w-[400px] h-full flex flex-col">
-        <SheetHeader>
+        <SheetHeader className="">
           <SheetTitle className="capitalize">{categoryName}</SheetTitle>
           <Input placeholder="search your widgets" onChange={searchHandler} />
-          <SheetDescription>Your widgets:</SheetDescription>
         </SheetHeader>
         <div className="flex-1">
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-2 py-4">
+            <SheetDescription>Your widgets:</SheetDescription>
             {filteredWidgets.length ? (
               filteredWidgets.map((widget) => {
                 return (
-                  <div className="flex items-center space-x-2" key={widget.id}>
-                    <Checkbox
-                      id={widget.id}
-                      onCheckedChange={updateWidgetVisibilityHandler.bind(
-                        null,
-                        widget.id
-                      )}
-                      checked={widget.isVisible}
-                      disabled={widget.delete}
-                    />
-                    <label
-                      htmlFor={widget.id}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
-                    >
-                      {widget.name}
-                    </label>
-                    {!widget.delete && (
-                      <Button
-                        onClick={() => removeWidgetHandler(widget.id)}
-                        className="h-5 w-5"
-                        size="icon"
-                        variant="outline"
+                  <div
+                    className="flex items-center justify-between"
+                    key={widget.id}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id={widget.id}
+                        onCheckedChange={updateWidgetVisibilityHandler.bind(
+                          null,
+                          widget.id
+                        )}
+                        checked={widget.isVisible}
+                        disabled={widget.delete}
+                      />
+                      <label
+                        htmlFor={widget.id}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
                       >
-                        <TrashIcon />
-                      </Button>
+                        {widget.name}
+                      </label>
+                    </div>
+
+                    {!widget.delete && (
+                      <RemoveDialog
+                        item={widget.name}
+                        onConfirm={() => removeWidgetHandler(widget.id)}
+                      >
+                        <Button
+                          className="h-7 w-7"
+                          size="icon"
+                          variant="outline"
+                        >
+                          <TrashIcon />
+                        </Button>
+                      </RemoveDialog>
                     )}
                   </div>
                 );
